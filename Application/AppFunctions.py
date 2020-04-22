@@ -18,6 +18,11 @@ def diskLogs(self):
     self.insert(END, p)
     self.after(5000, lambda:diskLogs(self))
 
+def netLogs(self):
+    p = str(psutil.net_io_counters())
+    self.insert(END, p)
+    self.after(10000, lambda:netLogs(self))
+
 def createNewWindow1(self):
     newWindow1 = Toplevel(self)
     pass

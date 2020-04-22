@@ -200,4 +200,5 @@ buttonApplication4.pack()
 
 func.memoryLogs(listboxLogs2)
 func.diskLogs(listboxLogs3)
+func.netLogs(listboxLogs4)
 root.mainloop()
