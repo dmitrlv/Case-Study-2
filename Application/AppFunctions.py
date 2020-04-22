@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter.ttk import *
 import psutil
 
-root = Tk()
 
 def doNothing():
     print("LMAO")
@@ -10,7 +9,7 @@ def doNothing():
 def memoryLogs(self):
     p = psutil.virtual_memory()
     self.insert(END, p.percent)
-    root.after(1000, memoryLogs)
+    self.after(1000, lambda:memoryLogs(self))
 
 def createNewWindow1(self):
     newWindow1 = Toplevel(self)

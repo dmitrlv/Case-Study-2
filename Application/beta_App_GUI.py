@@ -158,5 +158,5 @@ buttonApplication4 = Button(frameUser4, text="Opened Applications", command=func
 #labelApplication4.config(font=("Calibri", 20))
 buttonApplication4.pack()
 
-func.memoryLogs()
+func.memoryLogs(listboxLogs2)
 root.mainloop()
