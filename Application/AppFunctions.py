@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.ttk import *
 import psutil
+from datetime import datetime
 
 
 def doNothing():
@@ -8,8 +9,9 @@ def doNothing():
 
 def memoryLogs(self):
     p = psutil.virtual_memory()
-    self.insert(END, p.percent)
-    self.after(1000, lambda:memoryLogs(self))
+    s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage"
+    self.insert(END, s)
+    self.after(60000, lambda:memoryLogs(self))
 
 def createNewWindow1(self):
     newWindow1 = Toplevel(self)
