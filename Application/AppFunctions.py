@@ -13,6 +13,11 @@ def memoryLogs(self):
     self.insert(END, s)
     self.after(60000, lambda:memoryLogs(self))
 
+def diskLogs(self):
+    p = str(psutil.disk_usage('C:/'))
+    self.insert(END, p)
+    self.after(5000, lambda:diskLogs(self))
+
 def createNewWindow1(self):
     newWindow1 = Toplevel(self)
     pass
