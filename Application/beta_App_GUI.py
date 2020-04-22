@@ -1,30 +1,16 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import font as tkFont
+import psutil
+import AppFunctions as func
 
-def doNothing():
-    print("LMAO")
 
 root = Tk()
 
 mainMenu = Menu(root)
 root.geometry("900x600")
 
-def createNewWindow1():
-    newWindow1 = Toplevel(root)
-    pass
 
-def createNewWindow2():
-    newWindow2 = Toplevel(root)
-    pass
-
-def createNewWindow3():
-    newWindow3 = Toplevel(root)
-    pass
-
-def createNewWindow4():
-    newWindow4 = Toplevel(root)
-    pass
 
 #Calibri = tkFont.Font(family='Calibri', size=20, weight=tkFont.BOLD)
 
@@ -38,15 +24,15 @@ root.config(menu=mainMenu)
 
 helpMenu = Menu(mainMenu)
 mainMenu.add_cascade(label="Help", menu = helpMenu)
-helpMenu.add_command(label="About", command=doNothing)
-helpMenu.add_command(label="Manual", command=doNothing)
+helpMenu.add_command(label="About", command=func.doNothing)
+helpMenu.add_command(label="Manual", command=func.doNothing)
 
 tabsMenu = Menu(mainMenu)
 mainMenu.add_cascade(label="Tabs", menu = tabsMenu)
-tabsMenu.add_command(label="tab1", command=doNothing)
-tabsMenu.add_command(label="tab2", command=doNothing)
-tabsMenu.add_command(label="tab3", command=doNothing)
-tabsMenu.add_command(label="tab4", command=doNothing)
+tabsMenu.add_command(label="tab1", command=func.doNothing)
+tabsMenu.add_command(label="tab2", command=func.doNothing)
+tabsMenu.add_command(label="tab3", command=func.doNothing)
+tabsMenu.add_command(label="tab4", command=func.doNothing)
 
 nb = Notebook(root)
 nb.grid(row=1, column=0, columnspan=50, rowspan=49, sticky='NSEW')
@@ -84,8 +70,33 @@ nb.add(page2, text='Real-Time Statistics')
 page3 = Frame(nb)
 nb.add(page3, text='Logs')
 
-listboxLogs = Listbox(page3, height=30)
-listboxLogs.pack(fill=X)
+listboxFrame1 = Frame(page3)
+labelCPU = Label(listboxFrame1, text="CPU")
+labelCPU.pack()
+listboxFrame1.place(x=100, y=50)
+listboxLogs1 = Listbox(listboxFrame1, width=40)
+listboxLogs1.pack()
+
+listboxFrame2 = Frame(page3)
+labelMemory = Label(listboxFrame2, text="Memory")
+labelMemory.pack()
+listboxFrame2.place(x=550, y=50)
+listboxLogs2 = Listbox(listboxFrame2, width=40)
+listboxLogs2.pack()
+
+listboxFrame3 = Frame(page3)
+labelDisk = Label(listboxFrame3, text="Disk")
+labelDisk.pack()
+listboxFrame3.place(x=100, y=300)
+listboxLogs3 = Listbox(listboxFrame3, width=40)
+listboxLogs3.pack()
+
+listboxFrame4 = Frame(page3)
+labelNetwork = Label(listboxFrame4, text="Network")
+labelNetwork.pack()
+listboxFrame4.place(x=550, y=300)
+listboxLogs4 = Listbox(listboxFrame4, width=40)
+listboxLogs4.pack()
 
 page4 = Frame(nb)
 nb.add(page4, text='Users')
@@ -101,7 +112,7 @@ labelUptime1.pack()
 labelStatus1 = Label(frameUser1, text="Status: Active")
 labelStatus1.config(font=("Calibri", 20))
 labelStatus1.pack()
-buttonApplication1 = Button(frameUser1, text="Opened Applications", command=createNewWindow1)
+buttonApplication1 = Button(frameUser1, text="Opened Applications", command=func.createNewWindow1)
 buttonApplication1.pack()
 
 frameUser2 = Frame(page4)
@@ -115,7 +126,7 @@ labelUptime2.pack()
 labelStatus2 = Label(frameUser2, text="Status: Active")
 labelStatus2.config(font=("Calibri", 20))
 labelStatus2.pack()
-buttonApplication2 = Button(frameUser2, text="Opened Applications", command=createNewWindow2)
+buttonApplication2 = Button(frameUser2, text="Opened Applications", command=func.createNewWindow2)
 buttonApplication2.pack()
 
 frameUser3 = Frame(page4)
@@ -129,7 +140,7 @@ labelUptime3.pack()
 labelStatus3 = Label(frameUser3, text="Status: Active")
 labelStatus3.config(font=("Calibri", 20))
 labelStatus3.pack()
-buttonApplication3 = Button(frameUser3, text="Opened Applications", command=createNewWindow3)
+buttonApplication3 = Button(frameUser3, text="Opened Applications", command=func.createNewWindow3)
 buttonApplication3.pack()
 
 frameUser4 = Frame(page4)
@@ -143,8 +154,9 @@ labelUptime4.pack()
 labelStatus4 = Label(frameUser4, text="Status: Active")
 labelStatus4.config(font=("Calibri", 20))
 labelStatus4.pack()
-buttonApplication4 = Button(frameUser4, text="Opened Applications", command=createNewWindow4)
+buttonApplication4 = Button(frameUser4, text="Opened Applications", command=func.createNewWindow4)
 #labelApplication4.config(font=("Calibri", 20))
 buttonApplication4.pack()
 
+func.memoryLogs()
 root.mainloop()
