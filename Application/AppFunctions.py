@@ -10,7 +10,7 @@ def doNothing():
 def cpuLogs(self):
     p = str(psutil.cpu_percent())
     self.insert(END, p)
-    self.after(5000, lambda:cpuLogs(self))
+    self.after(1000, lambda:cpuLogs(self))
     with open("C:\\Users\\dmitr\\Downloads\\cpuLogs.txt", "a") as myfile:
         myfile.write(p)
         myfile.write('\n')
@@ -42,10 +42,12 @@ def netLogs(self):
         myfile.write('\n')
 
 def procLogs(self):
+    self.delete(0,END)
     for proc in psutil.process_iter(['pid', 'name', 'username']):
         p = str(proc.info)
         self.insert(END, p)
-        self.after(50000, lambda:procLogs(self))
+    self.after(10000, lambda:procLogs(self))
+        
 
 def createNewWindow1(self):
     newWindow1 = Toplevel(self)

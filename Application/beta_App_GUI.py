@@ -3,7 +3,50 @@ from tkinter.ttk import *
 from tkinter import font as tkFont
 import psutil
 import AppFunctions as func
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure
+import matplotlib.animation as animation
+from matplotlib import style
+from matplotlib import pyplot as plt
 
+style.use("ggplot")
+
+
+
+f = Figure(figsize=(3,3), dpi=100)
+k = Figure(figsize=(3,3), dpi=100)
+a = f.add_subplot(111)
+f.suptitle("CPU Usage")
+b = k.add_subplot(111)
+k.suptitle("Memory Usage")
+values1 = []
+values2 = []
+
+
+
+for i in range(0,25):
+    values1.append(0)
+    values2.append(0)
+
+def animate(i):
+    global values1
+    global values2
+    pullData1 = str(psutil.cpu_percent())
+    p = psutil.virtual_memory()
+    pullData2 = str(p.percent)
+    values1.append(float(pullData1))
+    values2.append(float(pullData2))
+    del values1[0]
+    del values2[0]
+    a.clear()
+    b.clear()
+    a.plot(values1)
+    b.plot(values2)
+    # a.set_xlim([0,50])
+    a.set_ylim([0,100])
+    b.set_ylim([0,100])
 
 root = Tk()
 
@@ -73,6 +116,18 @@ labelUsers.pack(anchor=E)
 
 page2 = Frame(nb)
 nb.add(page2, text='Real-Time Statistics')
+
+graphFrame1 = Frame(page2)
+graphFrame1.pack(fill=BOTH)
+canvas1 = FigureCanvasTkAgg(f, graphFrame1)
+canvas1.draw()
+canvas1.get_tk_widget().pack(side=TOP, fill=BOTH, expand=TRUE)
+
+graphFrame2 = Frame(page2)
+graphFrame2.pack(fill=BOTH)
+canvas2 = FigureCanvasTkAgg(k, graphFrame2)
+canvas2.draw()
+canvas2.get_tk_widget().pack(side=TOP, fill=BOTH, expand=TRUE)
 
 page3 = Frame(nb)
 nb.add(page3, text='Logs')
@@ -214,9 +269,13 @@ scrollbar_y5.config(command=listboxLogs5.yview)
 scrollbar_y5.pack(side=RIGHT, fill=Y)
 listboxLogs5.pack(fill=X)
 
+
+
 func.cpuLogs(listboxLogs1)
 func.memoryLogs(listboxLogs2)
 func.diskLogs(listboxLogs3)
 func.netLogs(listboxLogs4)
 func.procLogs(listboxLogs5)
+ani1 = animation.FuncAnimation(f, animate, interval=1000)
+ani2 = animation.FuncAnimation(k, animate, interval=1000)
 root.mainloop()
