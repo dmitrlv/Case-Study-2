@@ -8,49 +8,61 @@ from datetime import datetime
 def doNothing():
     print("LMAO")
 
-def cpuLogs(self):
-    p = str(psutil.cpu_percent())
-    s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + p + "% CPU usage\n"
+def cpuLogs(self, checkButtonCPUVar):
+    if checkButtonCPUVar.get() == 0:
+        p = str(psutil.cpu_percent())
+        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + p + "% CPU usage\n"
+    elif checkButtonCPUVar.get() == 1:
+        s = str(psutil.cpu_times(percpu=False))
     self.insert(END, s)
-    self.after(5000, lambda:cpuLogs(self))
+    self.after(5000, lambda:cpuLogs(self, checkButtonCPUVar))
     with open(".\\cpuLogs.txt", "a") as myfile:
         myfile.write(s)
 
 
-def memoryLogs(self):
-    p = psutil.virtual_memory()
-    s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage\n"
+def memoryLogs(self, checkButtonRAMVar):
+    if checkButtonRAMVar.get() == 0:
+        p = psutil.virtual_memory()
+        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage\n"
+    elif checkButtonRAMVar.get() == 1:
+        s = str(psutil.virtual_memory())
     self.insert(END, s)
-    self.after(5000, lambda:memoryLogs(self))
+    self.after(5000, lambda:memoryLogs(self, checkButtonRAMVar))
     with open(".\\memoryLogs.txt", "a") as myfile:
         myfile.write(s)
 
-def diskLogs(self):
-    p = psutil.disk_io_counters(perdisk=False, nowrap=True)
-    s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " Read time was: " + str(p.read_time) + "ms and write time was: " + str(p.write_time) +"ms.\n"
+def diskLogs(self, checkButtonDiskVar):
+    if checkButtonDiskVar.get() == 0:
+        p = psutil.disk_io_counters(perdisk=False, nowrap=True)
+        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " Read time was: " + str(p.read_time) + "ms and write time was: " + str(p.write_time) +"ms.\n"
+    elif checkButtonDiskVar.get() == 1:
+        s = str(psutil.disk_io_counters(perdisk=False, nowrap=True))
     self.insert(END, s)
-    self.after(5000, lambda:diskLogs(self))
+    self.after(5000, lambda:diskLogs(self, checkButtonDiskVar))
     with open(".\\diskLogs.txt", "a") as myfile:
         myfile.write(s)
 
-def netLogs(self):
+def netLogs(self, checkButtonNetworkVar):
     global bytesSentPrev
     global bytesRecPrev
-    p = psutil.net_io_counters()
-    bytesSentNow = p.bytes_sent
-    bytesRecNow = p.bytes_recv
-    try:
-        bytesSentDelta = bytesSentNow - bytesSentPrev
-        bytesRecDelta = bytesRecNow - bytesRecPrev
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " MB sent delta: " + str(round(bytesSentDelta/1000000, 1)) + ". MB received delta: " + str(round(bytesRecDelta/1000000, 1))
-    except NameError:
-        bytesSentDelta = bytesSentNow
-        bytesRecDelta = bytesRecNow
-        s = "MB sent from the start of the server: " + str(round(bytesSentDelta/1000000, 1)) + ". MB received from the start of the server: " + str(round(bytesRecDelta/1000000, 1))
-    bytesSentPrev = bytesSentNow
-    bytesRecPrev = bytesRecNow
+    if checkButtonNetworkVar.get() == 0:
+        p = psutil.net_io_counters()
+        bytesSentNow = p.bytes_sent
+        bytesRecNow = p.bytes_recv
+        try:
+            bytesSentDelta = bytesSentNow - bytesSentPrev
+            bytesRecDelta = bytesRecNow - bytesRecPrev
+            s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " MB sent delta: " + str(round(bytesSentDelta/1000000, 1)) + ". MB received delta: " + str(round(bytesRecDelta/1000000, 1))
+        except NameError:
+            bytesSentDelta = bytesSentNow
+            bytesRecDelta = bytesRecNow
+            s = "MB sent from the start of the server: " + str(round(bytesSentDelta/1000000, 1)) + ". MB received from the start of the server: " + str(round(bytesRecDelta/1000000, 1))
+        bytesSentPrev = bytesSentNow
+        bytesRecPrev = bytesRecNow
+    elif checkButtonNetworkVar.get() == 1:
+        s = str(psutil.net_io_counters())
     self.insert(END, s)
-    self.after(5000, lambda:netLogs(self))
+    self.after(5000, lambda:netLogs(self, checkButtonNetworkVar))
     with open(".\\netLogs.txt", "a") as myfile:
         myfile.write(s)
         myfile.write('\n')
@@ -62,8 +74,6 @@ def procLogs(self):
         self.insert(END, p)
     self.after(10000, lambda:procLogs(self))
         
-def checkBoxLogTab(self):
-    pass
 
 def createNewWindow1(self):
     newWindow1 = Toplevel(self)
