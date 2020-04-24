@@ -11,36 +11,39 @@ def doNothing():
 def cpuLogs(self, checkButtonCPUVar):
     if checkButtonCPUVar.get() == 0:
         p = str(psutil.cpu_percent())
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + p + "% CPU usage\n"
+        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + p + "% CPU usage"
     elif checkButtonCPUVar.get() == 1:
-        s = str(psutil.cpu_times(percpu=False))
+        s = str(psutil.cpu_times(percpu=False)) + " CPU usage %" + str(psutil.cpu_percent())
     self.insert(END, s)
     self.after(5000, lambda:cpuLogs(self, checkButtonCPUVar))
     with open(".\\cpuLogs.txt", "a") as myfile:
         myfile.write(s)
+        myfile.write("\n")
 
 
 def memoryLogs(self, checkButtonRAMVar):
     if checkButtonRAMVar.get() == 0:
         p = psutil.virtual_memory()
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage\n"
+        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage"
     elif checkButtonRAMVar.get() == 1:
         s = str(psutil.virtual_memory())
     self.insert(END, s)
     self.after(5000, lambda:memoryLogs(self, checkButtonRAMVar))
     with open(".\\memoryLogs.txt", "a") as myfile:
         myfile.write(s)
+        myfile.write("\n")
 
 def diskLogs(self, checkButtonDiskVar):
     if checkButtonDiskVar.get() == 0:
         p = psutil.disk_io_counters(perdisk=False, nowrap=True)
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " Read time was: " + str(p.read_time) + "ms and write time was: " + str(p.write_time) +"ms.\n"
+        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " Read time was: " + str(p.read_time) + "ms and write time was: " + str(p.write_time) +"ms."
     elif checkButtonDiskVar.get() == 1:
         s = str(psutil.disk_io_counters(perdisk=False, nowrap=True))
     self.insert(END, s)
     self.after(5000, lambda:diskLogs(self, checkButtonDiskVar))
     with open(".\\diskLogs.txt", "a") as myfile:
         myfile.write(s)
+        myfile.write("\n")
 
 def netLogs(self, checkButtonNetworkVar):
     global bytesSentPrev
