@@ -44,7 +44,6 @@ def animate(i):
     b.clear()
     a.plot(values1)
     b.plot(values2)
-    # a.set_xlim([0,50])
     a.set_ylim([0,100])
     b.set_ylim([0,100])
 

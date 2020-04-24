@@ -4,41 +4,55 @@ import psutil
 from datetime import datetime
 
 
+
 def doNothing():
     print("LMAO")
 
 def cpuLogs(self):
     p = str(psutil.cpu_percent())
-    self.insert(END, p)
-    self.after(1000, lambda:cpuLogs(self))
-    with open("C:\\Users\\dmitr\\Downloads\\cpuLogs.txt", "a") as myfile:
-        myfile.write(p)
-        myfile.write('\n')
+    s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + p + "% CPU usage\n"
+    self.insert(END, s)
+    self.after(5000, lambda:cpuLogs(self))
+    with open(".\\cpuLogs.txt", "a") as myfile:
+        myfile.write(s)
 
 
 def memoryLogs(self):
     p = psutil.virtual_memory()
-    s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage"
+    s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage\n"
     self.insert(END, s)
     self.after(5000, lambda:memoryLogs(self))
-    with open("C:\\Users\\dmitr\\Downloads\\memoryLogs.txt", "a") as myfile:
+    with open(".\\memoryLogs.txt", "a") as myfile:
         myfile.write(s)
-        myfile.write('\n')
 
 def diskLogs(self):
-    p = str(psutil.disk_usage('C:/'))
-    self.insert(END, p)
+    p = psutil.disk_io_counters(perdisk=False, nowrap=True)
+    s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " Read time was: " + str(p.read_time) + "ms and write time was: " + str(p.write_time) +"ms.\n"
+    self.insert(END, s)
     self.after(5000, lambda:diskLogs(self))
-    with open("C:\\Users\\dmitr\\Downloads\\diskLogs.txt", "a") as myfile:
-        myfile.write(p)
-        myfile.write('\n')
+    with open(".\\diskLogs.txt", "a") as myfile:
+        myfile.write(s)
 
 def netLogs(self):
-    p = str(psutil.net_io_counters())
-    self.insert(END, p)
+    global bytesSentPrev
+    global bytesRecPrev
+    p = psutil.net_io_counters()
+    bytesSentNow = p.bytes_sent
+    bytesRecNow = p.bytes_recv
+    try:
+        bytesSentDelta = bytesSentNow - bytesSentPrev
+        bytesRecDelta = bytesRecNow - bytesRecPrev
+        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " MB sent delta: " + str(round(bytesSentDelta/1000000, 1)) + ". MB received delta: " + str(round(bytesRecDelta/1000000, 1))
+    except NameError:
+        bytesSentDelta = bytesSentNow
+        bytesRecDelta = bytesRecNow
+        s = "MB sent from the start of the server: " + str(round(bytesSentDelta/1000000, 1)) + ". MB received from the start of the server: " + str(round(bytesRecDelta/1000000, 1))
+    bytesSentPrev = bytesSentNow
+    bytesRecPrev = bytesRecNow
+    self.insert(END, s)
     self.after(5000, lambda:netLogs(self))
-    with open("C:\\Users\\dmitr\\Downloads\\netLogs.txt", "a") as myfile:
-        myfile.write(p)
+    with open(".\\netLogs.txt", "a") as myfile:
+        myfile.write(s)
         myfile.write('\n')
 
 def procLogs(self):
@@ -48,6 +62,8 @@ def procLogs(self):
         self.insert(END, p)
     self.after(10000, lambda:procLogs(self))
         
+def checkBoxLogTab(self):
+    pass
 
 def createNewWindow1(self):
     newWindow1 = Toplevel(self)
