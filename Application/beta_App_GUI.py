@@ -24,6 +24,8 @@ k.suptitle("Memory Usage")
 values1 = []
 values2 = []
 
+
+
 for i in range(0,25):
     values1.append(0)
     values2.append(0)
@@ -84,18 +86,21 @@ nb.add(page1, text='Main')
 mainFrame = Frame(page1)
 mainFrame.place(x=200, y=150)
 
-cpuTxtVar ="CPU Usage: " + str(StringVar())
+cpuTxtVar = StringVar()
 memoryTxtVar = StringVar()
 diskTxtVar = StringVar()
 UsersTxtVar = StringVar()
 
 labelStatus = Label(mainFrame, text="Status: Running")
 labelStatus.config(font=("Calibri", 20))
-labelCPU = Label(mainFrame, textvariable=cpuTxtVar)
+labelCPU = Label(mainFrame)
+func.updateCPUlabel(labelCPU)
 labelCPU.config(font=("Calibri", 20))
-labelMemory = Label(mainFrame, textvariable=memoryTxtVar)
+labelMemory = Label(mainFrame)
+func.updateMemorylabel(labelMemory)
 labelMemory.config(font=("Calibri", 20))
-labelSpace = Label(mainFrame, textvariable=diskTxtVar)
+labelSpace = Label(mainFrame)
+func.updateSpacelabel(labelSpace)
 labelSpace.config(font=("Calibri", 20))
 labelUsers = Label(mainFrame, textvariable=UsersTxtVar)
 labelUsers.config(font=("Calibri", 20))
@@ -129,19 +134,6 @@ canvas2.get_tk_widget().pack(side=TOP, fill=BOTH, expand=TRUE)
 page3 = Frame(nb)
 nb.add(page3, text='Logs')
 
-checkButtonCPUVar = IntVar()
-checkButtonRAMVar = IntVar()
-checkButtonDiskVar = IntVar()
-checkButtonNetworkVar = IntVar()
-
-checkButtonCPULogs = Checkbutton(page3, text="Disable CPU logs formatting (more information)", variable=checkButtonCPUVar)
-checkButtonRAMLogs = Checkbutton(page3, text="Disable RAM logs formatting (more information)", variable=checkButtonRAMVar)
-checkButtonDiskLogs = Checkbutton(page3, text="Disable Disk logs formatting (more information)", variable=checkButtonDiskVar)
-checkButtonNetworkLogs = Checkbutton(page3, text="Disable Network logs formatting (more information)", variable=checkButtonNetworkVar)
-checkButtonCPULogs.place(x=100, y=250)
-checkButtonRAMLogs.place(x=550, y=250)
-checkButtonDiskLogs.place(x=100, y=500)
-checkButtonNetworkLogs.place(x=550, y=500)
 listboxFrame1 = Frame(page3)
 labelCPU = Label(listboxFrame1, text="CPU")
 labelCPU.pack()
@@ -280,11 +272,16 @@ scrollbar_y5.pack(side=RIGHT, fill=Y)
 listboxLogs5.pack(fill=X)
 
 
-func.cpuLogs(listboxLogs1, checkButtonCPUVar)
-func.memoryLogs(listboxLogs2, checkButtonRAMVar)
-func.diskLogs(listboxLogs3, checkButtonDiskVar)
-func.netLogs(listboxLogs4, checkButtonNetworkVar)
+
+
+func.cpuLogs(listboxLogs1)
+func.memoryLogs(listboxLogs2)
+func.diskLogs(listboxLogs3)
+func.netLogs(listboxLogs4)
 func.procLogs(listboxLogs5)
+
+
 ani1 = animation.FuncAnimation(f, animate, interval=1000)
 ani2 = animation.FuncAnimation(k, animate, interval=1000)
+
 root.mainloop()
