@@ -2,37 +2,55 @@ from tkinter import *
 from tkinter.ttk import *
 import psutil
 from datetime import datetime
+import sqlite3
+import databaseMaker as dbMaker
 
 
+dateNow = str(datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 def doNothing():
-    print("LMAO")
+    pass
+    
 
 def cpuLogs(self, checkButtonCPUVar):
     if checkButtonCPUVar.get() == 0:
         p = str(psutil.cpu_percent())
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + p + "% CPU usage\n"
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + p + "% CPU usage"
+        s = "At " + dateNow + " " + p + "% CPU usage"
     elif checkButtonCPUVar.get() == 1:
-        s = str(psutil.cpu_times(percpu=False))
-        s = str(psutil.cpu_times(percpu=False)) + " CPU usage %" + str(psutil.cpu_percent())
+        s = str(psutil.cpu_stats()) + " CPU usage %" + str(psutil.cpu_percent())
     self.insert(END, s)
-    self.after(5000, lambda:cpuLogs(self, checkButtonCPUVar))
+    dbMaker.c.execute("""CREATE TABLE IF NOT EXISTS 'cpu'(
+        date text,
+        ctx_switches int,
+        interrupts int,
+        soft_interrupts int,
+        syscalls int,
+        percentage float
+    );
+    """)
+    self.after(5000, lambda:(cpuLogs(self, checkButtonCPUVar), dbMaker.insertCPUinfoDB()))
     with open(".\\cpuLogs.txt", "a") as myfile:
         myfile.write(s)
         myfile.write("\n")
 
 
-
 def memoryLogs(self, checkButtonRAMVar):
     if checkButtonRAMVar.get() == 0:
         p = psutil.virtual_memory()
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage\n"
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " " + str(p.percent) + "% RAM usage"
+        s = "At " + dateNow + " " + str(p.percent) + "% RAM usage"
     elif checkButtonRAMVar.get() == 1:
         s = str(psutil.virtual_memory())
     self.insert(END, s)
-    self.after(5000, lambda:memoryLogs(self, checkButtonRAMVar))
+    dbMaker.c.execute("""CREATE TABLE IF NOT EXISTS 'ram'(
+        date text,
+        total int,
+        available int,
+        used int,
+        free int,
+        percentage float
+    );
+    """)
+    self.after(5000, lambda:(memoryLogs(self, checkButtonRAMVar), dbMaker.insertMemoryInfoDB()))
     with open(".\\memoryLogs.txt", "a") as myfile:
         myfile.write(s)
         myfile.write("\n")
@@ -41,12 +59,21 @@ def memoryLogs(self, checkButtonRAMVar):
 def diskLogs(self, checkButtonDiskVar):
     if checkButtonDiskVar.get() == 0:
         p = psutil.disk_io_counters(perdisk=False, nowrap=True)
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " Read time was: " + str(p.read_time) + "ms and write time was: " + str(p.write_time) +"ms.\n"
-        s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " Read time was: " + str(p.read_time) + "ms and write time was: " + str(p.write_time) +"ms."
+        s = "At " + dateNow + " Read time was: " + str(p.read_time) + "ms and write time was: " + str(p.write_time) +"ms."
     elif checkButtonDiskVar.get() == 1:
         s = str(psutil.disk_io_counters(perdisk=False, nowrap=True))
     self.insert(END, s)
-    self.after(5000, lambda:diskLogs(self, checkButtonDiskVar))
+    dbMaker.c.execute("""CREATE TABLE IF NOT EXISTS 'diskio'(
+        date text,
+        read_count int,
+        write_count int,
+        read_bytes int,
+        write_bytes int,
+        read_time int,
+        write_time int
+    );
+    """)
+    self.after(5000, lambda:(diskLogs(self, checkButtonDiskVar), dbMaker.insertDiskInfoDB()))
     with open(".\\diskLogs.txt", "a") as myfile:
         myfile.write(s)
         myfile.write("\n")
@@ -62,7 +89,7 @@ def netLogs(self, checkButtonNetworkVar):
         try:
             bytesSentDelta = bytesSentNow - bytesSentPrev
             bytesRecDelta = bytesRecNow - bytesRecPrev
-            s = "At " + datetime.now().strftime("%Y-%m-%d %H:%M") + " MB sent delta: " + str(round(bytesSentDelta/1000000, 1)) + ". MB received delta: " + str(round(bytesRecDelta/1000000, 1))
+            s = "At " + dateNow + " MB sent delta: " + str(round(bytesSentDelta/1000000, 1)) + ". MB received delta: " + str(round(bytesRecDelta/1000000, 1))
         except NameError:
             bytesSentDelta = bytesSentNow
             bytesRecDelta = bytesRecNow
@@ -72,7 +99,19 @@ def netLogs(self, checkButtonNetworkVar):
     elif checkButtonNetworkVar.get() == 1:
         s = str(psutil.net_io_counters())
     self.insert(END, s)
-    self.after(5000, lambda:netLogs(self, checkButtonNetworkVar))
+    dbMaker.c.execute("""CREATE TABLE IF NOT EXISTS 'networkio'(
+        date text,
+        bytes_sent int,
+        bytes_recv int,
+        packets_sent int,
+        packets_recv int,
+        errin int,
+        errout int,
+        dropin int,
+        dropout int
+    );
+    """)
+    self.after(5000, lambda:(netLogs(self, checkButtonNetworkVar), dbMaker.insertNetInfoDB()))
     with open(".\\netLogs.txt", "a") as myfile:
         myfile.write(s)
         myfile.write('\n')
