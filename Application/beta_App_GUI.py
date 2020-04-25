@@ -178,6 +178,18 @@ scrollbar_y3 = Scrollbar(listboxFrame3)
 listboxLogs3.config(yscrollcommand=scrollbar_y3.set)
 scrollbar_y3.config(command=listboxLogs3.yview)
 scrollbar_y3.pack(side=RIGHT, fill=Y)
+checkButtonCPUVar = IntVar()
+checkButtonRAMVar = IntVar()
+checkButtonDiskVar = IntVar()
+checkButtonNetworkVar = IntVar()
+checkButtonCPULogs = Checkbutton(page3, text="Disable CPU logs formatting (more information)", variable=checkButtonCPUVar)
+checkButtonRAMLogs = Checkbutton(page3, text="Disable RAM logs formatting (more information)", variable=checkButtonRAMVar)
+checkButtonDiskLogs = Checkbutton(page3, text="Disable Disk logs formatting (more information)", variable=checkButtonDiskVar)
+checkButtonNetworkLogs = Checkbutton(page3, text="Disable Network logs formatting (more information)", variable=checkButtonNetworkVar)
+checkButtonCPULogs.place(x=100, y=250)
+checkButtonRAMLogs.place(x=550, y=250)
+checkButtonDiskLogs.place(x=100, y=500)
+checkButtonNetworkLogs.place(x=550, y=500)
 listboxLogs3.pack()
 
 listboxFrame4 = Frame(page3)
@@ -274,10 +286,10 @@ listboxLogs5.pack(fill=X)
 
 
 
-func.cpuLogs(listboxLogs1)
-func.memoryLogs(listboxLogs2)
-func.diskLogs(listboxLogs3)
-func.netLogs(listboxLogs4)
+func.cpuLogs(listboxLogs1, checkButtonCPUVar)
+func.memoryLogs(listboxLogs2, checkButtonRAMVar)
+func.diskLogs(listboxLogs3, checkButtonDiskVar)
+func.netLogs(listboxLogs4, checkButtonNetworkVar)
 func.procLogs(listboxLogs5)
 
 
