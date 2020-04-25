@@ -98,6 +98,8 @@ def animate(i):
 def animate_for_bytes():
     global s1
     global s2
+    global bytesSentPrev
+    global bytesRecPrev
     p = psutil.net_io_counters()
     bytesSentNow = p.bytes_sent
     bytesRecNow = p.bytes_recv
@@ -113,10 +115,6 @@ def animate_for_bytes():
         s2 = round(bytesRecDelta/1000000, 1)
     bytesSentPrev = bytesSentNow
     bytesRecPrev = bytesRecNow
-    print(bytesSentNow)
-    print(bytesRecNow)
-    print(bytesSentPrev)
-    print(bytesRecPrev)
 
 root = Tk()
 
