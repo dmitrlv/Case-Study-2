@@ -5,9 +5,6 @@ from datetime import datetime
 
 
 
-def doNothing():
-    print("LMAO")
-
 def cpuLogs(self, checkButtonCPUVar):
     if checkButtonCPUVar.get() == 0:
         p = str(psutil.cpu_percent())
