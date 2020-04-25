@@ -87,19 +87,22 @@ def procLogs(self):
 
 def updateCPUlabel(self):
     p = str(psutil.cpu_percent())
-    c = "CPU Load: " + p
+    c = "CPU Load: {}%".format(p)
     self.config(text=c)
     self.after(1000, lambda:updateCPUlabel(self))
 
 def updateMemorylabel(self):
-    p = psutil.virtual_memory()
-    c = "Memory Load: " + str(p.percent)
+    perc = str(psutil.virtual_memory().percent)
+    totalMem = str(round(psutil.virtual_memory().total/1000000000, 0))
+    usedMem = str(round(psutil.virtual_memory().used/1000000000, 1))
+    c = "Memory Load: {}% {}GB/{}GB".format(perc, usedMem, totalMem)
     self.config(text=c)
     self.after(1000, lambda:updateMemorylabel(self))
 
 def updateSpacelabel(self):
-    p = psutil.disk_usage('/')
-    c = "Disk Usage: " + str(p.percent)
+    totalDisk = str(round(psutil.disk_usage('/').total/1000000000, 0))
+    usedDisk = str(round(psutil.disk_usage('/').used/1000000000, 1))
+    c = "Disk Usage: {}GB/{}GB".format(usedDisk, totalDisk)
     self.config(text=c)
     self.after(1000, lambda:updateSpacelabel(self))
         
