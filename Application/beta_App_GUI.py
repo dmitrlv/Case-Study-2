@@ -15,37 +15,108 @@ style.use("ggplot")
 
 
 
-f = Figure(figsize=(3,3), dpi=100)
-k = Figure(figsize=(3,3), dpi=100)
+f = Figure(figsize=(4.5,2), dpi=100)
+k = Figure(figsize=(4.5,2), dpi=100)
+l = Figure(figsize=(4.5,2), dpi=100)
+m = Figure(figsize=(4.5,2), dpi=100)
+
 a = f.add_subplot(111)
 f.suptitle("CPU Usage")
 b = k.add_subplot(111)
 k.suptitle("Memory Usage")
+c = l.add_subplot(111)
+l.suptitle("Disk Usage")
+d = m.add_subplot(111)
+m.suptitle("Network Usage")
+
 values1 = []
 values2 = []
-
+values3_1 = []
+values3_2 = []
+values4_1 = []
+values4_2 = []
 
 
 for i in range(0,25):
     values1.append(0)
     values2.append(0)
+    values3_1.append(0)
+    values3_2.append(0)
+    values4_1.append(0)
+    values4_2.append(0)
 
 def animate(i):
     global values1
     global values2
+    global values3_1
+    global values3_2
+    global values4_1
+    global values4_2
+    # global bytesSentPrev
+    # global bytesRecPrev
+    # global bytesSentDelta
+    # global bytesRecDelta
+    global s1
+    global s2
     pullData1 = str(psutil.cpu_percent())
     p = psutil.virtual_memory()
     pullData2 = str(p.percent)
+    y = psutil.disk_io_counters(perdisk=False, nowrap=True)
+    pullData3_1 = str(y.read_time)
+    pullData3_2 = str(y.write_time)
+    # c = psutil.net_io_counters()
+    # bytesSentNow = c.bytes_sent
+    # bytesRecNow = c.bytes_recv
+    animate_for_bytes()
     values1.append(float(pullData1))
     values2.append(float(pullData2))
+    values3_1.append(int(pullData3_1))
+    values3_2.append(int(pullData3_2))
+    values4_1.append(float(s1))
+    values4_2.append(float(s2))
     del values1[0]
     del values2[0]
+    del values3_1[0]
+    del values3_2[0]
+    del values4_1[0]
+    del values4_2[0]
+
     a.clear()
     b.clear()
+    c.clear()
+    d.clear()
     a.plot(values1)
     b.plot(values2)
+    c.plot(values3_1)
+    c.plot(values3_2)
+    d.plot(values4_1)
+    d.plot(values4_2)
     a.set_ylim([0,100])
     b.set_ylim([0,100])
+    #c.set_ylim([0,100])
+
+def animate_for_bytes():
+    global s1
+    global s2
+    p = psutil.net_io_counters()
+    bytesSentNow = p.bytes_sent
+    bytesRecNow = p.bytes_recv
+    try:
+        bytesSentDelta = bytesSentNow - bytesSentPrev
+        bytesRecDelta = bytesRecNow - bytesRecPrev
+        s1 = round(bytesSentDelta/1000000, 1)
+        s2 = round(bytesRecDelta/1000000, 1)
+    except:
+        bytesSentDelta = bytesSentNow
+        bytesRecDelta = bytesRecNow
+        s1 = round(bytesSentDelta/1000000, 1)
+        s2 = round(bytesRecDelta/1000000, 1)
+    bytesSentPrev = bytesSentNow
+    bytesRecPrev = bytesRecNow
+    print(bytesSentNow)
+    print(bytesRecNow)
+    print(bytesSentPrev)
+    print(bytesRecPrev)
 
 root = Tk()
 
@@ -102,10 +173,6 @@ labelMemory.config(font=("Calibri", 20))
 labelSpace = Label(mainFrame)
 func.updateSpacelabel(labelSpace)
 labelSpace.config(font=("Calibri", 20))
-# labelStatus.place(x=250, y=100)
-# labelCPU.place(x=250, y=120)
-# labelMemory.place(x=250, y=140)
-# labelSpace.place(x=250, y=160)
 labelStatus.pack(anchor=W)
 labelCPU.pack(anchor=W)
 labelMemory.pack(anchor=W)
@@ -117,14 +184,26 @@ page2 = Frame(nb)
 nb.add(page2, text='Real-Time Statistics')
 
 graphFrame1 = Frame(page2)
-graphFrame1.pack(fill=BOTH)
+graphFrame1.place(x=0, y=50)
 canvas1 = FigureCanvasTkAgg(f, graphFrame1)
 canvas1.draw()
 canvas1.get_tk_widget().pack(side=TOP, fill=BOTH, expand=TRUE)
 
 graphFrame2 = Frame(page2)
-graphFrame2.pack(fill=BOTH)
+graphFrame2.place(x=450, y=50)
 canvas2 = FigureCanvasTkAgg(k, graphFrame2)
+canvas2.draw()
+canvas2.get_tk_widget().pack(side=TOP, fill=BOTH, expand=TRUE)
+
+graphFrame3 = Frame(page2)
+graphFrame3.place(x=0, y=300)
+canvas3 = FigureCanvasTkAgg(l, graphFrame3)
+canvas3.draw()
+canvas3.get_tk_widget().pack(side=TOP, fill=BOTH, expand=TRUE)
+
+graphFrame2 = Frame(page2)
+graphFrame2.place(x=450, y=300)
+canvas2 = FigureCanvasTkAgg(m, graphFrame2)
 canvas2.draw()
 canvas2.get_tk_widget().pack(side=TOP, fill=BOTH, expand=TRUE)
 
@@ -292,5 +371,7 @@ func.procLogs(listboxLogs5)
 
 ani1 = animation.FuncAnimation(f, animate, interval=1000)
 ani2 = animation.FuncAnimation(k, animate, interval=1000)
+ani3 = animation.FuncAnimation(l, animate, interval=1000)
+ani4 = animation.FuncAnimation(m, animate, interval=1000)
 
 root.mainloop()
