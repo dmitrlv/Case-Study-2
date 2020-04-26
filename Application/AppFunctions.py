@@ -4,13 +4,18 @@ import psutil
 from datetime import datetime
 import sqlite3
 import databaseMaker as dbMaker
-
+import socket
+import os
+#import ServerReceive as serv
 
 dateNow = str(datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 def doNothing():
     pass
     
+def usersConnect():
+    pass
+    #serv.connect()
 
 def cpuLogs(self, checkButtonCPUVar):
     if checkButtonCPUVar.get() == 0:
@@ -150,17 +155,43 @@ def checkBoxLogTab(self):
     pass
 
 def createNewWindow1(self):
+    global s
+    global conn 
+    global msg
     newWindow1 = Toplevel(self)
-    pass
+    newWindow1.geometry("900x600")
+    listboxUserProcesses1 = Listbox(newWindow1, height=60)
+    listboxUserProcesses1.pack(fill=X)
+    # usersConnect()
+    #while len(msg) > 0:
+    #    msg = conn.recv(4096)
+    #    listboxUserProcesses1.insert(END, msg.decode("utf-8"))
+    with open("user1Proc.txt", "r") as rf:
+        while(True):
+            chunkToRead = rf.read(1)
+            stringToListbox = ''
+            while chunkToRead != '\n' and chunkToRead != '':
+                stringToListbox = stringToListbox + chunkToRead
+                chunkToRead = rf.read(1)
+            listboxUserProcesses1.insert(END, stringToListbox)
+            if chunkToRead == '':
+                break
 
 def createNewWindow2(self):
     newWindow2 = Toplevel(self)
-    pass
+    newWindow2.geometry("900x600")
+    listboxUserProcesses2 = Listbox(newWindow2, height=60)
+    listboxUserProcesses2.pack(fill=X)
 
 def createNewWindow3(self):
     newWindow3 = Toplevel(self)
-    pass
+    newWindow3.geometry("900x600")
+    listboxUserProcesses3 = Listbox(newWindow3, height=60)
+    listboxUserProcesses3.pack(fill=X)
 
 def createNewWindow4(self):
     newWindow4 = Toplevel(self)
-    pass
+    newWindow4.geometry("900x600")
+    listboxUserProcesses4 = Listbox(newWindow4, height=60)
+    listboxUserProcesses4.pack(fill=X)
+
