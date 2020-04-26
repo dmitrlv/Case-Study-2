@@ -108,7 +108,7 @@ def animate_for_bytes():
         bytesRecDelta = bytesRecNow - bytesRecPrev
         s1 = round(bytesSentDelta/1000000, 1)
         s2 = round(bytesRecDelta/1000000, 1)
-    except:
+    except NameError:
         bytesSentDelta = bytesSentNow
         bytesRecDelta = bytesRecNow
         s1 = round(bytesSentDelta/1000000, 1)

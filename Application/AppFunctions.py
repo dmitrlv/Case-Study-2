@@ -121,6 +121,7 @@ def procLogs(self):
     self.delete(0,END)
     for proc in psutil.process_iter(['pid', 'name', 'username']):
         p = str(proc.info)
+        p = ''.join(c for c in p if c not in '\'{}') #strips string from characters '{}
         self.insert(END, p)
     self.after(10000, lambda:procLogs(self))
 
